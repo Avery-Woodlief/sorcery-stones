@@ -2,9 +2,6 @@
 
 def column_match_query(matrix, pos, matching_blocks):
 
-    
-    
-
     row = pos[0]
     col = pos[1]
 
@@ -47,7 +44,7 @@ def row_match_query(matrix, pos, matching_blocks):
 
     if (row - 1 >= 0):
         top_neighbor = matrix[row - 1][col]
-    if (row + 1 < 28)
+    if (row + 1 < 15):
         bottom_neighbor = matrix[row + 1][col]
 
     if ((top_neighbor != None) and (top_neighbor.type == queried.type)): # go to far left of "stack"

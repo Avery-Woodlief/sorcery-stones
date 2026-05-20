@@ -1,0 +1,10 @@
+PYGAME_TOP_BAR_HEIGHT = 37 # in pixels
+TEMPLATE_OFFSET_Y = 12 # in pixels
+BLOCK_SPACING_X = 0.45 # in pixels
+BLOCK_SPACING_Y = 0 # in pixels
+BLOCK_WIDTH = 50 # in pixels
+BLOCK_HEIGHT = 50 # in pixels
+SCREEN_WIDTH = 1182 # in pixels
+SCREEN_HEIGHT = 877 # in pixels
+MAX_BLOCKS_X = 7 # in blocks
+MAX_BLOCKS_Y = 15 # in blocks
