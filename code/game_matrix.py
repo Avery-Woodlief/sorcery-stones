@@ -22,20 +22,24 @@ class Grid:
         self.rows = MAX_BLOCKS_Y
         self.cols = MAX_BLOCKS_X
         self.pool = ["goblin", "mander", "moon", "pig", "spiral", "star", "witch", "wizard"]
-        self.block_grid = None
-        self.init_block_grid()
+        self.block_list = None # 1D array of all blocks
+        self.init_block_list()
         
 
-    def init_block_grid(self):
-        #self.block_grid = [[Block(self.pool[randint(0, 7)], (j, i)) for i in range(num_cols)] for j in range(num_rows)] # i columns, j rows
-        self.block_grid = [[Block(self.pool[randint(0, 7)]) for i in range(self.cols)] for j in range(self.rows)] # i columns, j rows
+    def init_block_list(self):
+        self.block_list = []
+        for j in range(self.rows):
+            for i in range(self.cols):
+                self.block_list.append(Block(self.pool[randint(0, 7)], (j, i)))
+        
 
     def __getitem__(self, cell): # row first
-        if (not self.block_grid):
+        if (not self.block_list):
             return ValueError("block grid is set to None")
-        row = cell[0]
-        col = cell[1]
-        return self.block_grid[row][col] # returns block at that cell
+        
+        for b in self.block_list:
+            if b.cell == cell:
+                return b
 
     def cell_to_euclid(self, cell):
         row = cell[0]
@@ -43,6 +47,7 @@ class Grid:
         return (385 + (col * (50 + BLOCK_SPACING_X)), 805-PYGAME_TOP_BAR_HEIGHT-TEMPLATE_OFFSET_Y - row * (50 + BLOCK_SPACING_Y))
 
     def euclid_to_cell(self, euclid): # euclid is just point in xy-plane
+        # used to convert mouse position on screen to cell in grid
         x = euclid[0]
         y = euclid[1]
         rowResult = euclid_y_to_row(y)
@@ -52,4 +57,13 @@ class Grid:
         if (columnResult < 0):
             return (-1, -1)
         return (rowResult, columnResult)
+
+    def swap_block_with_right_neighbor(self, selected_block):
+        selected_cell = selected_block.cell
+        row, col = selected_cell
+        if (col + 1 >= MAX_BLOCKS_X):
+            return
+        selected_block_R_neighbor = self.__getitem__((row, col + 1))
+        selected_block.update_cell(selected_block_R_neighbor.cell)
+        selected_block_R_neighbor.update_cell(selected_cell)
 

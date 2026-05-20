@@ -27,7 +27,7 @@ class Renderer:
 
         for j in range(rows):
             for i in range(cols):
-                cell = (j, i)
+                cell = self.grid[(j, i)].cell
                 pos = self.grid.cell_to_euclid(cell)
                 x = pos[0]
                 y = pos[1]
