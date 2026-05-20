@@ -46,5 +46,5 @@ class Renderer:
         else:
             pygame.mouse.set_cursor(self.images["cursor swapper"])
             self.screen.blit(self.images["laser pointer"], (mouseX, mouseY))
-        #pygame.display.flip()
+        pygame.display.flip()
 
