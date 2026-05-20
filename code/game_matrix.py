@@ -24,7 +24,12 @@ class Grid:
         self.pool = ["goblin", "mander", "moon", "pig", "spiral", "star", "witch", "wizard"]
         self.block_list = None # 1D array of all blocks
         self.init_block_list()
-        
+        self.blocks_to_del = [] # 1D array of cells (row, col), used to take away matching blocks
+
+    def del_blocks(self):
+        for block in self.block_list:
+            if (block.cell in self.blocks_to_del):
+                block.del_img()
 
     def init_block_list(self):
         self.block_list = []
