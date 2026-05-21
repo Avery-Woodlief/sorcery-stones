@@ -30,6 +30,7 @@ class Grid:
         for block in self.block_list:
             if (block.cell in self.blocks_to_del):
                 block.del_img()
+        self.blocks_to_del = []
 
     def init_block_list(self):
         self.block_list = []

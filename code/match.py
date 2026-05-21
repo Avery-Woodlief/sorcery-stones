@@ -1,65 +1,87 @@
+from game_constants import *
+
 # each match_query is executed with seperate matching_blocks lists which get consolidated into one list after all checks.
 
-def row_match_query(matrix, cell, matching_blocks):
+def row_match_query(grid, cell, matching_blocks, direction):
 
-    row = cell[0]
-    col = cell[1]
+    '''
+    direction: 1 means go left, 0 means go right, -1 is when both are exhausted
+    duplicates are handled elsewhere
+    '''
 
-    queried = matrix[cell]
+    if (direction == -1):
+        return
 
-    left_neighbor = None
-    right_neighbor = None
+    row, col = cell
+    queried = grid[cell]
 
-    if (col - 1 >= 0):
-        left_neighbor = matrix[(row, col - 1)]
+    if (direction == 1):
+        if (col - 1 < 0): # no left neighbor
+            return row_match_query(grid, cell, matching_blocks, direction=0) # now go right
+        elif (col - 1 >= 0):
+            # left neighbor exists, so grab it, check it, continue
+            left_cell = (row, col - 1)
+            left = grid[left_cell]
+            if (left.type == queried.type):
+                matching_blocks.append(left_cell)
+                return row_match_query(grid, left_cell, matching_blocks, direction=1) # match found so keep going left
+            else:
+                return row_match_query(grid, cell, matching_blocks, direction=0) # now go right
+                    # using cell instead of left_cell here avoids more duplicates
+    elif (direction == 0):
+        if (col + 1 >= MAX_BLOCKS_X): # no right neighbor
+            return row_match_query(grid, cell, matching_blocks, direction=-1)
+        elif (col + 1 < MAX_BLOCKS_X):
+            # right neighbor exists, so grab it, check it, continue
+            right_cell = (row, col + 1)
+            right = grid[right_cell]
+            if (right.type == queried.type):
+                matching_blocks.append(right_cell)
+                # NOTE: using cell instead of right_cell in recall = infinite loop going between same two blocks
+                return row_match_query(grid, right_cell, matching_blocks, direction=0) # keep going right
+            else:
+                return row_match_query(grid, cell, matching_blocks, direction=-1)
+
+def column_match_query(grid, cell, matching_blocks, direction):
     
+    '''
+    direction: 1 means go up, 0 means go down, -1 is when both are exhausted
+    duplicates are handled elsewhere
+    '''
 
-    if (col + 1 < 7):
-        right_neighbor = matrix[(row, col + 1)]
-    
-    
-    if ((left_neighbor != None) and (left_neighbor.type == queried.type)): # go to top of the stack of blocks of same type in the column
-        if (left_neighbor.cell not in matching_blocks):
-            matching_blocks.append(left_neighbor.cell)
-            return row_match_query(matrix, left_neighbor.cell, matching_blocks)
+   
+    if (direction == -1):
+        return 
 
-    if ((right_neighbor != None) and (right_neighbor.type == queried.type)): # go from top of stack to the bottom of stack
-        if (right_neighbor.cell not in matching_blocks):
-            matching_blocks.append(right_neighbor.cell)
-            return row_match_query(matrix, right_neighbor.cell, matching_blocks)
+    row, col = cell
+    queried = grid[cell]
 
-    if (len(set(matching_blocks)) >= 3): # using set just counts unique positions, hence unique blocks (blocks and positions are 1-1)
-        return True
-    else:
-        return False
+    if (direction == 1):
+        if (row + 1 >= MAX_BLOCKS_Y): # no top neighbor
+            return column_match_query(grid, cell, matching_blocks, direction=0) # now go downwards
+        elif (row + 1 < MAX_BLOCKS_Y): # top neighbor exists
+            # grabbing top neighbor from grid
+            top_cell = (row + 1, col)
+            top = grid[top_cell]
+            if (top.type == queried.type):
+                matching_blocks.append(top_cell) # put in here if top is same type as queried
+                return column_match_query(grid, top_cell, matching_blocks, direction=1) # keep going up
+            else:
+                return column_match_query(grid, cell, matching_blocks, direction = 0) # top neighbor is not same type, now start going down
 
-def column_match_query(matrix, cell, matching_blocks):
-    row = cell[0]
-    col = cell[1]
+    if (direction == 0):
+        if (row - 1 < 0): # no bottom neighbor
+            return column_match_query(grid, cell, matching_blocks, direction=-1) # end the search entirely
+        elif (row - 1 >= 0): 
+            # bottom neighbor exists, so grab it, check it, continue
+            bot_cell = (row - 1, col)
+            bot = grid[bot_cell]
+            if (bot.type == queried.type):
+                matching_blocks.append(bot_cell)
+                return column_match_query(grid, bot_cell, matching_blocks, direction=0)
+            else: # bottom neighbor is different type
+                return column_match_query(grid, cell, matching_blocks, direction=-1)
 
-    queried = matrix[cell]
- 
-    top_neighbor = None
-    bottom_neighbor = None
 
-    if (row - 1 >= 0):
-        top_neighbor = matrix[(row - 1, col)]
-    if (row + 1 < 15):
-        bottom_neighbor = matrix[row + 1, col]
 
-    if ((top_neighbor != None) and (top_neighbor.type == queried.type)): # go to far left of "stack"
-        if (top_neighbor.cell not in matching_blocks):        
-            matching_blocks.append(top_neighbor.cell)
-            return column_match_query(matrix, top_neighbor.cell, matching_blocks)
-
-    elif ((bottom_neighbor != None) and (bottom_neighbor.type == queried.type)): # go from far left to far right of the "stack"
-        if (bottom_neighbor.cell not in matching_blocks):        
-            matching_blocks.append(bottom_neighbor.cell)
-            return column_match_query(matrix, bottom_neighbor.cell, matching_blocks)
-
-    else:
-        if (len(set(matching_blocks)) >= 3):
-            return True
-        else:
-            return False
 

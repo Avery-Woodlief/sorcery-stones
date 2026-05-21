@@ -2,18 +2,6 @@ import pygame
 from match import *
 
 
-def merge_matches(matching_block_lists):
-    consolidated_lists = []
-    for MBL in matching_block_lists:
-        for e in MBL:
-            consolidated_lists.append(e)
-    matching_blocks = set(consolidated_lists)
-    return list(matching_blocks)
-
-def merge_list(list_, total):
-    if (len(list_) >= 3):
-        total.append(list_)
-
 def handle_events(event, display):
 
     if (event.type == pygame.MOUSEBUTTONDOWN):
@@ -28,25 +16,27 @@ def handle_events(event, display):
 
                 r1,c1=cell_from_mouse
 
-                to_merge = []
 
-                row_matching_blocks1 = [(r1, c1 + 1)]
-                row_matching_blocks2 = [(r1, c1)]
-                column_matching_blocks1 = [(r1, c1 + 1)]
-                column_matching_blocks2 = [(r1, c1)]
+                column_matching_blocks = [(r1, c1+1)] # including the queried cell!
+                column_match_query(display.grid, (r1, c1+1), column_matching_blocks, 1)
+                if (len(list(set(column_matching_blocks))) >= 3):
+                    display.grid.blocks_to_del = list(set(column_matching_blocks))
+                    display.grid.del_blocks()
 
-                row_match_query(display.grid, (r1, c1 + 1), row_matching_blocks1)                
-                column_match_query(display.grid, (r1, c1 + 1), column_matching_blocks1)
-                row_match_query(display.grid, (r1, c1), row_matching_blocks2)
-                column_match_query(display.grid, (r1, c1), column_matching_blocks2)
+                column_matching_blocks = [(r1, c1)] # including the queried cell!
+                column_match_query(display.grid, (r1, c1), column_matching_blocks, 1)
+                if (len(list(set(column_matching_blocks))) >= 3):
+                    display.grid.blocks_to_del = list(set(column_matching_blocks))
+                    display.grid.del_blocks()
+                
+                row_matching_blocks = [(r1, c1 + 1)]
+                row_match_query(display.grid, (r1, c1 + 1), row_matching_blocks, 1)
+                if (len(list(set(row_matching_blocks))) >= 3):
+                    display.grid.blocks_to_del = list(set(row_matching_blocks))
+                    display.grid.del_blocks()
 
-                merge_list(row_matching_blocks1, to_merge)
-                merge_list(row_matching_blocks2, to_merge)
-                merge_list(column_matching_blocks1, to_merge)
-                merge_list(column_matching_blocks2, to_merge)
-
-                display.grid.blocks_to_del = merge_matches(to_merge)
-                #print(display.grid.blocks_to_del)
-                display.grid.del_blocks()
-                display.grid.blocks_to_del = []
-                #print("")
+                row_matching_blocks = [(r1, c1)]
+                row_match_query(display.grid, (r1, c1), row_matching_blocks, 1)
+                if (len(list(set(row_matching_blocks))) >= 3):
+                    display.grid.blocks_to_del = list(set(row_matching_blocks))
+                    display.grid.del_blocks()
