@@ -28,12 +28,15 @@ class Grid:
 
 
     def del_blocks(self, cells):
+        deleted_cells = []
         for cell in cells:
             try:
                 block = self[cell]
             except (IndexError) as e:
                 continue
             self.block_list.remove(block)
+            deleted_cells.append(cell)
+        for cell in deleted_cells:
             row, col = cell
             for r in range(row + 1, MAX_BLOCKS_Y):
                 index = -1
@@ -43,7 +46,7 @@ class Grid:
                         break
                 if (index == -1):
                     break
-                self.block_list[index].cell = (r - 1, col)
+                self.block_list[index].cell = (r - self.calc_empty_cells_below_cell((r, col)), col)
         return
         
 
