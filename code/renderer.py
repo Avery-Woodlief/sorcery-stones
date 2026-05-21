@@ -22,23 +22,13 @@ class Renderer:
         #pygame.mouse.set_cursor(self.images["cursor swapper"])
 
     def draw_blocks(self):
-        rows = self.grid.rows
-        cols = self.grid.cols
-
-        for j in range(rows):
-            for i in range(cols):
-                try:
-                    cell = self.grid[(j, i)].cell
-                    if (self.grid[cell].draw):
-                        pos = self.grid.cell_to_euclid(cell)
-                        x = pos[0]
-                        y = pos[1]
-                        self.screen.blit(self.grid[cell].img, (x, y))
-                except (IndexError):
-                    print("")
+        
+        for block in self.grid.block_list:
+            pos = self.grid.cell_to_euclid(block.cell)
+            self.screen.blit(block.img, pos)
     
     def redraw_screen(self):
-        self.screen.fill(COLOR_WHITE)
+        self.screen.fill(COLOR_BLACK)
         self.screen.blit(self.template, (0, 0))
         self.draw_blocks()
         mouseX, mouseY = pygame.mouse.get_pos()

@@ -19,7 +19,22 @@ def handle_events(event, display):
                     row_matching_blocks = [(r1, c1 + 1)]
                     row_match_query(display.grid, (r1, c1 + 1), row_matching_blocks, 1)
                     if (len(list(set(row_matching_blocks))) >= 3):
-                        display.grid.blocks_to_del = list(set(row_matching_blocks))
+                        display.grid.del_blocks(list(set(row_matching_blocks)))
+
+                    row_matching_blocks = [(r1, c1)]
+                    row_match_query(display.grid, (r1, c1), row_matching_blocks, 1)
+                    if (len(list(set(row_matching_blocks))) >= 3):
+                        display.grid.del_blocks(list(set(row_matching_blocks)))
+
+                    col_matching_blocks = [(r1, c1 + 1)]
+                    column_match_query(display.grid, (r1, c1 + 1), col_matching_blocks, 1)
+                    if (len(list(set(col_matching_blocks))) >= 3):
+                        display.grid.del_blocks(list(set(col_matching_blocks)))
+
+                    col_matching_blocks = [(r1, c1)]
+                    column_match_query(display.grid, (r1, c1), col_matching_blocks, 1)
+                    if (len(list(set(col_matching_blocks))) >= 3):
+                        display.grid.del_blocks(list(set(col_matching_blocks)))
                 except (ValueError) as e:
                     return # nothing to do
 

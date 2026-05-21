@@ -25,7 +25,11 @@ def row_match_query(grid, cell, matching_blocks, direction):
         elif (col - 1 >= 0):
             # left neighbor exists, so grab it, check it, continue
             left_cell = (row, col - 1)
-            left = grid[left_cell]
+            left = None
+            try:
+                left = grid[left_cell]
+            except (IndexError) as e: # that cell is now empty from previous match!
+                return row_match_query(grid, cell, matching_blocks, direction=0) # now go right
             if (left.type == queried.type):
                 matching_blocks.append(left_cell)
                 return row_match_query(grid, left_cell, matching_blocks, direction=1) # match found so keep going left
@@ -38,7 +42,11 @@ def row_match_query(grid, cell, matching_blocks, direction):
         elif (col + 1 < MAX_BLOCKS_X):
             # right neighbor exists, so grab it, check it, continue
             right_cell = (row, col + 1)
-            right = grid[right_cell]
+            right = None
+            try:
+                right = grid[right_cell]
+            except (IndexError) as e:
+                return row_match_query(grid, cell, matching_blocks, direction=-1) # right neighbor empty now, so search is exhausted
             if (right.type == queried.type):
                 matching_blocks.append(right_cell)
                 # NOTE: using cell instead of right_cell in recall = infinite loop going between same two blocks
@@ -70,7 +78,11 @@ def column_match_query(grid, cell, matching_blocks, direction):
         elif (row + 1 < MAX_BLOCKS_Y): # top neighbor exists
             # grabbing top neighbor from grid
             top_cell = (row + 1, col)
-            top = grid[top_cell]
+            top = None
+            try:
+                top = grid[top_cell]
+            except (IndexError) as e:
+                return column_match_query(grid, cell, matching_blocks, direction=0) # now go downwards
             if (top.type == queried.type):
                 matching_blocks.append(top_cell) # put in here if top is same type as queried
                 return column_match_query(grid, top_cell, matching_blocks, direction=1) # keep going up
@@ -83,7 +95,11 @@ def column_match_query(grid, cell, matching_blocks, direction):
         elif (row - 1 >= 0): 
             # bottom neighbor exists, so grab it, check it, continue
             bot_cell = (row - 1, col)
-            bot = grid[bot_cell]
+            bot = None
+            try:
+                bot = grid[bot_cell]
+            except (IndexError) as e:
+                return column_match_query(grid, cell, matching_blocks, direction=-1)
             if (bot.type == queried.type):
                 matching_blocks.append(bot_cell)
                 return column_match_query(grid, bot_cell, matching_blocks, direction=0)

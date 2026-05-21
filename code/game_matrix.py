@@ -27,7 +27,23 @@ class Grid:
         self.blocks_to_del = [] # 1D array of cells (row, col), used to take away matching blocks
 
 
-    def del_blocks(self):
+    def del_blocks(self, cells):
+        for cell in cells:
+            try:
+                block = self[cell]
+            except (IndexError) as e:
+                continue
+            self.block_list.remove(block)
+            row, col = cell
+            for r in range(row + 1, MAX_BLOCKS_Y):
+                index = -1
+                for b in self.block_list:
+                    if (b.cell == (r, col)):
+                        index = self.block_list.index(b)
+                        break
+                if (index == -1):
+                    break
+                self.block_list[index].cell = (r - 1, col)
         return
         
 
@@ -80,11 +96,36 @@ class Grid:
             return (-1, -1)
         return (rowResult, columnResult)
 
+    def blocks_above_cell_fall_1_row(self, cell):
+        row, col = cell
+        for block in self.block_list:
+            index = self.block_list.index(block)
+            blockRow, blockCol = block.cell
+            if (blockCol == col):
+                if (blockRow > row):
+                    self.block_list[index].cell = (blockRow - 1, blockCol)
+
+    def calc_empty_cells_below_cell(self, cell):
+        row, col = cell
+        num_empties = 0
+        i = 1
+        while (row - i >= 0):
+            try:
+                self[(row - i, col)]
+            except (IndexError):
+                num_empties += 1
+            i += 1
+        return num_empties
+
     def swap_block_with_right_neighbor(self, cell_from_mouse):
+        '''
+        Swaps two blocks:
+            A is left block, B is right block
+        Handles cases where there is empty block involved
+        '''
         row, col = cell_from_mouse
         if (col + 1 >= MAX_BLOCKS_X):
             return
-        
         indexA = -1
         indexB = -1
         try:
@@ -96,6 +137,24 @@ class Grid:
                 if (block.cell == (row, col + 1)):
                     indexB = self.block_list.index(block)
 
+            # case swapping with empty cell
+            if ((indexB == -1) and (indexA != -1)): # in A B, B is empty
+                self.block_list[indexA].cell = (row - self.calc_empty_cells_below_cell((row, col + 1)), col+1)
+                self.blocks_above_cell_fall_1_row((row, col))
+                # now A needs to fall down if below is empty
+                #print(f"{self.calc_empty_cells_below_cell((row, col+1))}")
+                
+                return
+            # case empty cell swapping with non-empty cell
+            if ((indexA == -1) and (indexB != -1)): # A is empty
+                self.block_list[indexB].cell = (row - self.calc_empty_cells_below_cell((row, col)), col)
+                self.blocks_above_cell_fall_1_row((row, col + 1))
+                return
+            # case both cells are empty
+            if ((indexA == -1) and (indexB == -1)):
+                return
+
+            # case both cells are non-empty
             self.block_list[indexA].cell = (row, col + 1)
             self.block_list[indexB].cell = cell_from_mouse
 

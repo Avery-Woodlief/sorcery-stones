@@ -14,10 +14,6 @@ class Block:
     def update_cell(self, new_cell):
         self.cell = new_cell
 
-    def disable(self):
-        self.draw = False
-        self.type = "empty cell"
-
     def load_img(self):
         self.img = pygame.image.load(self.filename).convert_alpha()
         self.img = pygame.transform.scale(self.img, (BLOCK_WIDTH, BLOCK_HEIGHT))
