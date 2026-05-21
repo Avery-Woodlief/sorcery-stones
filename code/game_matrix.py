@@ -26,11 +26,11 @@ class Grid:
         self.init_block_list()
         self.blocks_to_del = [] # 1D array of cells (row, col), used to take away matching blocks
 
+
     def del_blocks(self):
-        for block in self.block_list:
-            if (block.cell in self.blocks_to_del):
-                block.del_img()
-        self.blocks_to_del = []
+        return
+        
+
 
     def init_block_list(self):
         self.block_list = []
@@ -41,11 +41,27 @@ class Grid:
 
     def __getitem__(self, cell): # row first
         if (not self.block_list):
-            return ValueError("block grid is set to None")
+            raise ValueError("block grid is set to None")
         
         for b in self.block_list:
             if b.cell == cell:
                 return b
+
+        #print(f"no block at cell {cell}")
+
+        raise IndexError(f"no block at cell {cell}")
+
+    def __setitem__(self, key, value):
+        if (self.block_list == None):
+            raise ValueError("no block list")
+
+        index=None
+        for b in self.block_list:
+            if (b.cell == key):
+                index = self.block_list.index(b)
+        if (not index):
+            raise KeyError("improper key")
+        self.block_list[index] = value
 
     def cell_to_euclid(self, cell):
         row = cell[0]
@@ -64,12 +80,25 @@ class Grid:
             return (-1, -1)
         return (rowResult, columnResult)
 
-    def swap_block_with_right_neighbor(self, selected_block):
-        selected_cell = selected_block.cell
-        row, col = selected_cell
+    def swap_block_with_right_neighbor(self, cell_from_mouse):
+        row, col = cell_from_mouse
         if (col + 1 >= MAX_BLOCKS_X):
             return
-        selected_block_R_neighbor = self.__getitem__((row, col + 1))
-        selected_block.update_cell(selected_block_R_neighbor.cell)
-        selected_block_R_neighbor.update_cell(selected_cell)
+        
+        indexA = -1
+        indexB = -1
+        try:
+            for block in self.block_list:
+                if (block.cell == cell_from_mouse):
+                    indexA = self.block_list.index(block)
+
+            for block in self.block_list:
+                if (block.cell == (row, col + 1)):
+                    indexB = self.block_list.index(block)
+
+            self.block_list[indexA].cell = (row, col + 1)
+            self.block_list[indexB].cell = cell_from_mouse
+
+        except (IndexError) as e:
+            raise ValueError(f"{cell_from_mouse} has no right neighbor!")
 

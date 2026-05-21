@@ -27,11 +27,15 @@ class Renderer:
 
         for j in range(rows):
             for i in range(cols):
-                cell = self.grid[(j, i)].cell
-                pos = self.grid.cell_to_euclid(cell)
-                x = pos[0]
-                y = pos[1]
-                self.screen.blit(self.grid[cell].img, (x, y))
+                try:
+                    cell = self.grid[(j, i)].cell
+                    if (self.grid[cell].draw):
+                        pos = self.grid.cell_to_euclid(cell)
+                        x = pos[0]
+                        y = pos[1]
+                        self.screen.blit(self.grid[cell].img, (x, y))
+                except (IndexError):
+                    print("")
     
     def redraw_screen(self):
         self.screen.fill(COLOR_WHITE)

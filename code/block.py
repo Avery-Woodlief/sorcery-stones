@@ -9,13 +9,13 @@ class Block:
         self.img = None
         self.load_img()
         self.cell = init_cell
+        self.draw = True
 
     def update_cell(self, new_cell):
         self.cell = new_cell
 
-    def del_img(self):
-        self.img = pygame.image.load("../media/images/black_rect.png").convert_alpha()
-        self.img = pygame.transform.scale(self.img, (BLOCK_WIDTH, BLOCK_HEIGHT))
+    def disable(self):
+        self.draw = False
         self.type = "empty cell"
 
     def load_img(self):
