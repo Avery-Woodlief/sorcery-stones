@@ -30,7 +30,7 @@ def row_match_query(grid, cell, matching_blocks, direction):
                     # using cell instead of left_cell here avoids more duplicates
     elif (direction == 0):
         if (col + 1 >= MAX_BLOCKS_X): # no right neighbor
-            return row_match_query(grid, cell, matching_blocks, direction=-1)
+            return row_match_query(None, None, None, direction=-1)
         elif (col + 1 < MAX_BLOCKS_X):
             # right neighbor exists, so grab it, check it, continue
             right_cell = (row, col + 1)
@@ -40,7 +40,7 @@ def row_match_query(grid, cell, matching_blocks, direction):
                 # NOTE: using cell instead of right_cell in recall = infinite loop going between same two blocks
                 return row_match_query(grid, right_cell, matching_blocks, direction=0) # keep going right
             else:
-                return row_match_query(grid, cell, matching_blocks, direction=-1)
+                return row_match_query(None, None, None, direction=-1)
 
 def column_match_query(grid, cell, matching_blocks, direction):
     
@@ -71,7 +71,7 @@ def column_match_query(grid, cell, matching_blocks, direction):
 
     if (direction == 0):
         if (row - 1 < 0): # no bottom neighbor
-            return column_match_query(grid, cell, matching_blocks, direction=-1) # end the search entirely
+            return column_match_query(None, None, None, direction=-1) # end the search entirely
         elif (row - 1 >= 0): 
             # bottom neighbor exists, so grab it, check it, continue
             bot_cell = (row - 1, col)
@@ -80,7 +80,7 @@ def column_match_query(grid, cell, matching_blocks, direction):
                 matching_blocks.append(bot_cell)
                 return column_match_query(grid, bot_cell, matching_blocks, direction=0)
             else: # bottom neighbor is different type
-                return column_match_query(grid, cell, matching_blocks, direction=-1)
+                return column_match_query(None, None, None, direction=-1)
 
 
 
