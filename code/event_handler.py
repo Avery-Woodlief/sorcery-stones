@@ -1,60 +1,39 @@
 import pygame
 from match import *
 
+def find_all_matches(grid):
+    all_matches = set()
 
-def execute_matches_until_stable(display, cell):
-    r1, c1 = cell
-    r1_stable = False
-    r2_stable = False
-    c1_stable = False
-    c2_stable = False
+    for r in range(MAX_BLOCKS_Y):
+        for c in range(MAX_BLOCKS_X):
+            cell = (r, c)
 
-    while (not (r1_stable and r2_stable and c1_stable and c2_stable)):
+            try:
+                grid[cell]
+            except IndexError:
+                continue
 
-        try:
-            row_matching_blocks = [(r1, c1 + 1)]
-            row_match_query(display.grid, (r1, c1 + 1), row_matching_blocks, 1)
-            if (len(list(set(row_matching_blocks))) >= 3):
-                display.grid.del_blocks(list(set(row_matching_blocks)))
-                r1_stable = False
-            else:
-                r1_stable = True
-        except:
-            r1_stable = True
+            row_matches = [cell]
+            row_match_query(grid, cell, row_matches, 1)
+            if len(set(row_matches)) >= 3:
+                all_matches.update(row_matches)
 
-    
-        try:
-            row_matching_blocks = [(r1, c1)]
-            row_match_query(display.grid, (r1, c1), row_matching_blocks, 1)
-            if (len(list(set(row_matching_blocks))) >= 3):
-                display.grid.del_blocks(list(set(row_matching_blocks)))
-                r2_stable = False
-            else:
-                r2_stable = True
-        except:
-            r2_stable = True
+            col_matches = [cell]
+            column_match_query(grid, cell, col_matches, 1)
+            if len(set(col_matches)) >= 3:
+                all_matches.update(col_matches)
 
-        try:
-            col_matching_blocks = [(r1, c1 + 1)]
-            column_match_query(display.grid, (r1, c1 + 1), col_matching_blocks, 1)
-            if (len(list(set(col_matching_blocks))) >= 3):
-                display.grid.del_blocks(list(set(col_matching_blocks)))
-                c1_stable = False
-            else:
-                c1_stable = True
-        except:
-            c1_stable = True
+    return list(all_matches)
 
-        try:
-            col_matching_blocks = [(r1, c1)]
-            column_match_query(display.grid, (r1, c1), col_matching_blocks, 1)
-            if (len(list(set(col_matching_blocks))) >= 3):
-                display.grid.del_blocks(list(set(col_matching_blocks)))
-                c2_stable = False
-            else:
-                c2_stable = True
-        except:
-            c2_stable = True
+
+def execute_matches_until_stable(display, cell=None):
+    while True:
+        matches = find_all_matches(display.grid)
+
+        if len(matches) == 0:
+            break
+
+        display.grid.del_blocks(matches)
 
 def handle_events(event, display):
 
