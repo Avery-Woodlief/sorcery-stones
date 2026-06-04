@@ -22,7 +22,7 @@ class Block:
             self.fraction = 0
         else:
             #print(self.fraction)
-            self.fraction += ((1/200)*0)
+            self.fraction += ((1/200)*level)
 
     def load_img(self):
         self.img = pygame.image.load(self.filename).convert_alpha()
