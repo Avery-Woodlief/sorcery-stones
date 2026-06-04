@@ -9,10 +9,20 @@ class Block:
         self.img = None
         self.load_img()
         self.cell = init_cell
+        self.row = self.cell[0]
+        self.fraction = 0
         self.draw = True
 
-    def update_cell(self, new_cell):
-        self.cell = new_cell
+
+    def raise_by_1(self):
+        if (self.fraction >= 1):
+            self.row += 1
+            _, col = self.cell
+            self.cell = (self.row, col)
+            self.fraction = 0
+        else:
+            #print(self.fraction)
+            self.fraction += (1/200)
 
     def load_img(self):
         self.img = pygame.image.load(self.filename).convert_alpha()

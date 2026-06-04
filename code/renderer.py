@@ -9,7 +9,9 @@ class Renderer:
         self.template = pygame.image.load("../media/images/template.png")
         #self.background = pygame.image.load("../media/images/black_rect.png")
         self.grid = Grid() # initial grid of blocks
-                
+        
+        self.clock = pygame.time.Clock()
+
         CURSOR_SWAPPER = pygame.cursors.Cursor((BLOCK_WIDTH//2 - 1, BLOCK_HEIGHT//2 - 1), # middle of left block to swap
                                                 pygame.image.load("../media/images/cursor.png").convert_alpha())
         wand = pygame.image.load("../media/images/wand.png").convert_alpha()
@@ -28,9 +30,14 @@ class Renderer:
             self.screen.blit(block.img, pos)
     
     def redraw_screen(self):
+        
         self.screen.fill(COLOR_BLACK)
         self.screen.blit(self.template, (0, 0))
+        
         self.draw_blocks()
+        self.grid.raise_up()
+        
+        #self.grid.move_blocks_up(30)
         mouseX, mouseY = pygame.mouse.get_pos()
         
 
@@ -41,4 +48,5 @@ class Renderer:
             pygame.mouse.set_cursor(self.images["cursor swapper"])
             self.screen.blit(self.images["laser pointer"], (mouseX, mouseY))
         pygame.display.flip()
+        self.clock.tick(60)
 

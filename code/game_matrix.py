@@ -22,7 +22,7 @@ class Grid:
         self.rows = MAX_BLOCKS_Y
         self.cols = MAX_BLOCKS_X
         self.pool = ["goblin", "mander", "moon", "pig", "spiral", "star", "witch", "wizard"]
-        self.block_list = None # 1D array of all blocks
+        self.block_list = [] # 1D array of all blocks
         self.init_block_list()
         self.blocks_to_del = [] # 1D array of cells (row, col), used to take away matching blocks
 
@@ -52,22 +52,36 @@ class Grid:
 
 
     def init_block_list(self):
-        self.block_list = []
-        for j in range(self.rows):
+        
+        for j in range(1):
             for i in range(self.cols):
                 self.block_list.append(Block(self.pool[randint(0, 7)], (j, i)))
-        
+
+
+    def raise_up(self):
+        actually_rose = False
+        for block in self.block_list:
+            row_before = block.cell[0]
+            block.raise_by_1()
+            row_after = block.cell[0]
+            if (row_before < row_after):
+                actually_rose = True
+        if (actually_rose):
+            self.init_block_list()
+
+        for block in self.block_list:
+            empties = self.calc_empty_cells_below_cell(block.cell)
+            if (empties > 0):
+                row, col = block.cell
+                block.cell = (row - empties, col)
 
     def __getitem__(self, cell): # row first
         if (not self.block_list):
             raise ValueError("block grid is set to None")
-        
         for b in self.block_list:
             if b.cell == cell:
                 return b
-
         #print(f"no block at cell {cell}")
-
         raise IndexError(f"no block at cell {cell}")
 
     def __setitem__(self, key, value):

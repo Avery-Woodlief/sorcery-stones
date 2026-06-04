@@ -1,3 +1,6 @@
+
+
+
 PYGAME_TOP_BAR_HEIGHT = 37 # in pixels
 TEMPLATE_OFFSET_Y = 12 # in pixels
 BLOCK_SPACING_X = 0#0.45 # in pixels
@@ -17,8 +20,5 @@ COLUMN_RANGES = {i:(385 + (i * (50 + BLOCK_SPACING_X)),
 
 ROW_RANGES = {j:(805-PYGAME_TOP_BAR_HEIGHT-TEMPLATE_OFFSET_Y - j * (50 + BLOCK_SPACING_Y), 
                  855-PYGAME_TOP_BAR_HEIGHT-TEMPLATE_OFFSET_Y - j * (50 + BLOCK_SPACING_Y)) for j in range(MAX_BLOCKS_Y)}
-
-
-
 
 

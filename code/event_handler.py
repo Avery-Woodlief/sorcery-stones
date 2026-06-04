@@ -1,5 +1,11 @@
 import pygame
 from match import *
+from player import Player
+from announcer import Announcer
+
+player = Player("Avery")
+announcer = Announcer(player)
+
 
 def find_all_matches(grid):
     all_matches = set()
@@ -32,7 +38,8 @@ def execute_matches_until_stable(display, cell=None):
 
         if len(matches) == 0:
             break
-
+        player.score += (100*len(matches))
+        #print(player.score)
         display.grid.del_blocks(matches)
 
 def handle_events(event, display):
@@ -45,6 +52,10 @@ def handle_events(event, display):
                 cell_from_mouse = display.grid.euclid_to_cell((mouseX, mouseY))
                 display.grid.swap_block_with_right_neighbor(cell_from_mouse)
                 execute_matches_until_stable(display, cell_from_mouse)
-
+    try:
+        if (event.key == pygame.K_ESCAPE):
+            return 1
+    except (AttributeError):
+        return
                 
 
