@@ -9,6 +9,7 @@ display = Renderer()
 
 running = True
 while running:
+    execute_matches_until_stable(display)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False

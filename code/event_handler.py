@@ -39,11 +39,12 @@ def execute_matches_until_stable(display, cell=None):
         if len(matches) == 0:
             break
         player.score += (100*len(matches))
-        #print(player.score)
+        print(player.score)
         display.grid.del_blocks(matches)
 
 def handle_events(event, display):
 
+    execute_matches_until_stable(display)
     if (event.type == pygame.MOUSEBUTTONDOWN):
         if (event.button == 1):
             #print("left click")

@@ -27,6 +27,9 @@ class Grid:
         self.blocks_to_del = [] # 1D array of cells (row, col), used to take away matching blocks
 
 
+    
+
+
     def del_blocks(self, cells):
         deleted_cells = []
         for cell in cells:
