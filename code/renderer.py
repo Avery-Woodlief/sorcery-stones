@@ -27,7 +27,7 @@ class Renderer:
         SCORE_NUMS = [pygame.transform.scale(pygame.image.load(f"../media/images/score nums/{i}.png").convert_alpha(), (31, 75)) for i in range(10)]
         self.score_nums = {f'{i}':SCORE_NUMS[i] for i in range(10)}
 
-        BLOCKS_LEFT_NUMS = [pygame.transform.scale(pygame.image.load(f"../media/images/score nums/{i}.png").convert_alpha(), (22, 22)) for i in range(10)]
+        BLOCKS_LEFT_NUMS = [pygame.transform.scale(pygame.image.load(f"../media/images/small nums/{i}.png").convert_alpha(), (22, 30)) for i in range(10)]
         self.blocks_left_nums = {f'{i}':BLOCKS_LEFT_NUMS[i] for i in range(10)}
         
         LEVEL_NUMS = [pygame.transform.scale(pygame.image.load(f"../media/images/level nums/{i}.png").convert_alpha(), (65, 47)) for i in range(1, 5)]
