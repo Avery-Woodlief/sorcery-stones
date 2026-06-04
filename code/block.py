@@ -14,7 +14,7 @@ class Block:
         self.draw = True
 
 
-    def raise_by_1(self):
+    def raise_by_1(self, level = 1):
         if (self.fraction >= 1):
             self.row += 1
             _, col = self.cell
@@ -22,7 +22,7 @@ class Block:
             self.fraction = 0
         else:
             #print(self.fraction)
-            self.fraction += (1/200)
+            self.fraction += ((1/200)*0)
 
     def load_img(self):
         self.img = pygame.image.load(self.filename).convert_alpha()

@@ -1,6 +1,9 @@
 from block import *
 from game_constants import *
+from game_exceptions import GameOver
 from random import randint
+from player import Player
+from announcer import Announcer
 
 def euclid_x_to_column(x):
     for i in range(MAX_BLOCKS_X):
@@ -16,18 +19,43 @@ def euclid_y_to_row(y):
             return j
     return -1
 
+
+
 class Grid:
 
     def __init__(self):
         self.rows = MAX_BLOCKS_Y
         self.cols = MAX_BLOCKS_X
-        self.pool = ["goblin", "mander", "moon", "pig", "spiral", "star", "witch", "wizard"]
+        self.pool = {
+                        1:["goblin", "mander", "moon", "pig", "spiral", "star", "witch", "wizard"]
+                    }
+        self.level = 1
         self.block_list = [] # 1D array of all blocks
+        
         self.init_block_list()
         self.blocks_to_del = [] # 1D array of cells (row, col), used to take away matching blocks
+        
+        self.player = Player("Avery")
+        self.announcer = Announcer(self.player)
+        self.blocks_matched_counter = 0
+        self.level_conditions = {
+                                    1:50,
+                                    2:100,
+                                    3:150,
+                                    4:200
+                                }
 
+    def check_level_condition(self):
+        if (self.blocks_matched_counter >= self.level_conditions[self.level]):
+            self.level += 1
+            if (self.level > 4):
+                raise GameOver("Game has ended, you won!")
+            self.blocks_matched_counter = 0
 
-    
+    def check_lose_condition(self):
+        highest_block_row = max([block.cell[0] for block in self.block_list])
+        if (highest_block_row >= (self.rows)):
+            raise GameOver("Game Over!")
 
 
     def del_blocks(self, cells):
@@ -58,14 +86,14 @@ class Grid:
         
         for j in range(1):
             for i in range(self.cols):
-                self.block_list.append(Block(self.pool[randint(0, 7)], (j, i)))
+                self.block_list.append(Block(self.pool[self.level][randint(0, 7)], (j, i)))
 
 
     def raise_up(self):
         actually_rose = False
         for block in self.block_list:
             row_before = block.cell[0]
-            block.raise_by_1()
+            block.raise_by_1(self.level)
             row_after = block.cell[0]
             if (row_before < row_after):
                 actually_rose = True

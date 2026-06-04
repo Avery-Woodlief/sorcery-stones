@@ -1,10 +1,8 @@
 import pygame
 from match import *
-from player import Player
-from announcer import Announcer
 
-player = Player("Avery")
-announcer = Announcer(player)
+
+
 
 
 def find_all_matches(grid):
@@ -38,8 +36,9 @@ def execute_matches_until_stable(display, cell=None):
 
         if len(matches) == 0:
             break
-        player.score += (100*len(matches))
-        print(player.score)
+        display.grid.player.score += (100*len(matches))
+        #print(display.grid.player.score)
+        display.grid.blocks_matched_counter += len(matches)
         display.grid.del_blocks(matches)
 
 def handle_events(event, display):
